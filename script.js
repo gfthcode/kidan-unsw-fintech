@@ -50,4 +50,18 @@ document.addEventListener('DOMContentLoaded', () => {
   closeButton.addEventListener('click', closePanel);
   backdrop.addEventListener('click', event => { if (event.target === backdrop) closePanel(); });
   document.addEventListener('keydown', event => { if (event.key === 'Escape') closePanel(); });
+
+  const track = document.querySelector('#project-track');
+  const cards = [...(track?.querySelectorAll('.project-card') || [])];
+  const moveTrack = direction => {
+    if (!track || !cards.length) return;
+    const step = cards[0].getBoundingClientRect().width + 18;
+    track.scrollBy({left: direction * step, behavior: reduced ? 'auto' : 'smooth'});
+  };
+  document.querySelector('[data-slide="prev"]')?.addEventListener('click', () => moveTrack(-1));
+  document.querySelector('[data-slide="next"]')?.addEventListener('click', () => moveTrack(1));
+  track?.addEventListener('keydown', event => {
+    if (event.key === 'ArrowRight') { event.preventDefault(); moveTrack(1); }
+    if (event.key === 'ArrowLeft') { event.preventDefault(); moveTrack(-1); }
+  });
 });
