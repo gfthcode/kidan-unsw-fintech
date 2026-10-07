@@ -31,6 +31,10 @@
     if(!active)return;
     const p = reduced.matches ? 0 : progress(crane);
     draw(p<.65?'0':'1',p<.65?phase(p,0,.65):phase(p,.65,1));
+    const launch=$('.scene-launch');
+    const launchVisible=p>.2;
+    launch.classList.toggle('is-active',launchVisible);
+    launch.inert=!launchVisible;
     const fade=phase(p,.02,.22);
     intro.style.opacity=1-fade;
     intro.style.transform=`translateY(${-fade*55}px)`;
@@ -46,6 +50,9 @@
     const rp=reduced.matches?.4:clamp((innerHeight-r.top)/(innerHeight+r.height));
     truck.style.transform=`translateX(${(-25+rp*115)}%)`;
     const op=progress(ocean), open=smooth(phase(op,.05,.36));
+    const oceanAction=$('.ocean-action');
+    oceanAction.classList.toggle('is-active',op>.22);
+    oceanAction.inert=op<=.22;
     left.style.transform=`translateX(${-open*101}%)`;
     right.style.transform=`translateX(${open*101}%)`;
     left.style.visibility=right.style.visibility=open>.999?'hidden':'visible';
