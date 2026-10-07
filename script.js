@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const cards = [...(track?.querySelectorAll('.project-card') || [])];
   const moveTrack = direction => {
     if (!track || !cards.length) return;
-    const step = cards[0].getBoundingClientRect().width + 18;
+    const step = cards[0].getBoundingClientRect().width + (parseFloat(getComputedStyle(track).columnGap) || 0);
     track.scrollBy({left: direction * step, behavior: reduced ? 'auto' : 'smooth'});
   };
   document.querySelector('[data-slide="prev"]')?.addEventListener('click', () => moveTrack(-1));
@@ -65,3 +65,4 @@ document.addEventListener('DOMContentLoaded', () => {
     if (event.key === 'ArrowLeft') { event.preventDefault(); moveTrack(-1); }
   });
 });
+
