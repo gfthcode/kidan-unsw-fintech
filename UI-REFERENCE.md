@@ -1,8 +1,11 @@
-# UI reference
+# 当前界面参考
 
-Implemented for the user-provided video cffb435ddd63097d4a743d9cd5ae9030.mp4.
-The site depicted in the video is https://unitedcarriers.com/ (design credited there to Bearplus).
+用户提供的视频：2f8f2f656db9cacd5e79635f8fc26271.mp4（约 6 秒）。仅中间约 1—5 秒为网站演示，前后是其他社交媒体内容。
 
-The scroll implementation and portfolio layout are authored for this repository. Crane frame images, container, truck, ship, ocean, clouds, and plane illustrations are visual reference assets from the public United Carriers CDN, converted to locally hosted WebP assets. No reference-site company copy, testimonials, contact forms, tracking scripts, or analytics are included. These assets remain attributable to their original creators; this file records their origin rather than representing a license grant.
+沿用可观察的视觉结构：浅暖色大幅人物首屏、边角说明、右下大字、橙色眼镜放大、暖深色产品场景。未取得原网站源码或三维模型，因此使用新生成的概念眼镜静态素材配合滚动缩放和旋转重建转场，不宣称像素级或真实三维一比一。
 
-Motion: two crane frame atlases, scroll-linked road translation, two-sided reveal, ship zoom, cloud parallax, and plane translation. Reduced-motion preference disables crane scrubbing and plane movement. Portfolio content, links, and original PDF remain available independently of motion.
+个人内容沿用 content.js 中已有实习、项目和个人资料。静态 HTML 保留所有正文；项目研究过程使用原生 details；导航使用原生锚点；支持减少动态效果偏好。原彩色肖像与恢复后的 PDF 简历均未修改。
+
+概念眼镜由 imagegen 生成，用于视觉转场，不代表 Rokid 产品实拍；场景中明确标注。
+
+当前入口：index.html / atelier.css / atelier.js。旧的 journey、palette、refinement 文件与素材不再加载。
