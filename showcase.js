@@ -1,6 +1,6 @@
 (() => {
  const $=s=>document.querySelector(s), reduced=matchMedia('(prefers-reduced-motion: reduce)');
- const stage=$('.show-stage'), model=$('.model-wrap'), visor=$('.visor-wrap'), nucleus=$('.nucleus-object'), court=$('.court-object'), backdrop=$('.warm-backdrop');
+ const stage=$('.show-stage'), model=$('.model-wrap'), visor=$('.visor-wrap'), nucleus=$('.nucleus-object'), court=$('.court-object'), backdrop=$('.warm-backdrop'), mist=$('.opening-mist');
  const scenes=[...document.querySelectorAll('.scene-ui')], nav=[...document.querySelectorAll('.scene-nav a')];
  const clamp=n=>Math.max(0,Math.min(1,n)), ease=n=>n*n*(3-2*n), span=(p,a,b)=>ease(clamp((p-a)/(b-a)));
  const blend=(a,b,t)=>`rgb(${a.map((v,i)=>Math.round(v+(b[i]-v)*t)).join(',')})`;
@@ -11,6 +11,7 @@
   const current=Math.min(3,Math.floor(p+.45));
   const q=reduced.matches?current:p;
   const first=span(q,.12,.92), second=span(q,1.18,1.9), third=span(q,2.18,2.94);
+  mist.style.opacity=(1-span(q,.02,.72))*(reduced.matches?.48:1);
   model.style.opacity=1-span(q,.25,.7);
   model.style.transform=`scale(${1+first*.32}) rotate(${first*-3}deg)`;
   visor.style.opacity=span(q,.3,.7)*(1-second);
