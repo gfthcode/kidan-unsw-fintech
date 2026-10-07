@@ -1,0 +1,85 @@
+/* Native, reversible scroll choreography; static content works without animation. */
+(() => {
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const $ = s => document.querySelector(s);
+  const clamp = (v,a=0,b=1) => Math.max(a,Math.min(b,v));
+  const phase = (v,a,b) => clamp((v-a)/(b-a));
+  const smooth = t => t*t*(3-2*t);
+  const crane = $('.crane-journey'), pin = $('.crane-pin'), canvas = $('#crane-canvas');
+  const ctx = canvas.getContext('2d');
+  const intro = $('.journey-intro'), stack = $('.container-stack');
+  const ocean = $('.ocean-journey'), left = $('.milestone-left'), right = $('.milestone-right');
+  const ship = $('.cargo-ship'), water = $('.sea-texture'), oceanCopy = $('.ocean-copy');
+  const road = $('.road-scene'), truck = $('.road-truck'), flight = $('.flight-scene'), plane = $('.airplane');
+  const atlases = new Map();
+  let metadata = {}, lastFrame = '', ticking = false, active = true;
+  const draw = (sequence, position) => {
+    const image = atlases.get(sequence), meta = metadata[sequence];
+    if(!image || !meta) return;
+    const frame = Math.round(clamp(position)*(meta.count-1));
+    const key = sequence+':'+frame;
+    if(key===lastFrame) return;
+    lastFrame=key;
+    $('.crane-poster').hidden=true;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.drawImage(image,(frame%meta.cols)*meta.width,Math.floor(frame/meta.cols)*meta.height,meta.width,meta.height,0,0,canvas.width,canvas.height);
+  };
+  const loadImage = src => new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=reject;im.src=src;});
+  const progress = el => clamp(-el.getBoundingClientRect().top / Math.max(1,el.offsetHeight-innerHeight));
+  const update = () => {
+    ticking=false;
+    if(!active)return;
+    const p = reduced.matches ? 0 : progress(crane);
+    draw(p<.65?'0':'1',p<.65?phase(p,0,.65):phase(p,.65,1));
+    const fade=phase(p,.02,.22);
+    intro.style.opacity=1-fade;
+    intro.style.transform=`translateY(${-fade*55}px)`;
+    intro.style.visibility=fade>=1?'hidden':'visible';
+    const mobile=innerWidth<=700, center=smooth(phase(p,.4,.7));
+    canvas.style.width=mobile?`${150-50*center}%`:'100%';
+    canvas.style.left=mobile?`${-52+52*center}%`:'0';
+    canvas.style.transform=mobile?'none':`translateX(${-smooth(phase(p,.35,.65))*7}%)`;
+    stack.style.opacity=1-phase(p,.25,.5);
+    stack.style.transform=`translateX(${phase(p,.25,.55)*150}%)`;
+    $('.scene-progress i').style.width=p*100+'%';
+    const r=road.getBoundingClientRect();
+    const rp=reduced.matches?.4:clamp((innerHeight-r.top)/(innerHeight+r.height));
+    truck.style.transform=`translateX(${(-25+rp*115)}%)`;
+    const op=progress(ocean), open=smooth(phase(op,.05,.36));
+    left.style.transform=`translateX(${-open*101}%)`;
+    right.style.transform=`translateX(${open*101}%)`;
+    left.style.visibility=right.style.visibility=open>.999?'hidden':'visible';
+    const zoom=smooth(phase(op,.37,.86));
+    ship.style.transform=`translate(-50%,-50%) scale(${2.7-zoom*2.43})`;
+    water.style.transform=`scale(${1.3-zoom*.25}) translateY(${-zoom*3}%)`;
+    document.querySelectorAll('.wake').forEach(el=>{el.style.transform=`translateX(-50%) scale(${1.8-zoom*1.5})`;el.style.opacity=.45*(1-zoom*.6);});
+    const cloudPhase=phase(op,.64,1);
+    $('.cloud-one').style.opacity=cloudPhase*.9;
+    $('.cloud-one').style.transform=`translate(${-cloudPhase*25}%,${cloudPhase*30}%) scale(${.7+cloudPhase*.8})`;
+    $('.cloud-two').style.opacity=cloudPhase*.85;
+    $('.cloud-two').style.transform=`translate(${cloudPhase*25}%,${-cloudPhase*30}%) scale(${.7+cloudPhase*.8})`;
+    oceanCopy.style.opacity=phase(op,.72,.91);
+    oceanCopy.style.transform=`translateY(${(1-phase(op,.72,.91))*30}px)`;
+    oceanCopy.style.visibility=op<.72?'hidden':'visible';
+    const fr=flight.getBoundingClientRect(),fp=clamp((innerHeight-fr.top)/(innerHeight+fr.height));
+    plane.style.transform=reduced.matches?'none':`translate(${20-fp*42}%,${65-fp*135}%) rotate(-12deg) scale(${.9+fp*.25})`;
+  };
+  const schedule = () => {if(!ticking){ticking=true;requestAnimationFrame(update);}};
+  addEventListener('scroll',schedule,{passive:true});
+  addEventListener('resize',schedule,{passive:true});
+  reduced.addEventListener('change',schedule);
+  document.addEventListener('visibilitychange',()=>{active=!document.hidden;if(active)schedule();});
+  fetch('assets/journey/sequences.json').then(r=>{if(!r.ok)throw Error('sequence metadata');return r.json();}).then(async meta=>{
+    metadata=meta;
+    const poster=await loadImage('assets/journey/crane-poster.webp');
+    ctx.drawImage(poster,0,0,canvas.width,canvas.height);
+    if(reduced.matches)return;
+    for(const key of ['0','1']){
+      const im=await loadImage(`assets/journey/sequence-${key}.webp`);
+      atlases.set(key,im);lastFrame='';schedule();
+    }
+  }).catch(()=>{
+    const fallback=new Image();fallback.onload=()=>ctx.drawImage(fallback,0,0,canvas.width,canvas.height);fallback.src='assets/journey/crane-poster.webp';
+  });
+  schedule();
+})();
