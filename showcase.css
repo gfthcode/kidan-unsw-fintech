@@ -15,27 +15,16 @@
 @media(max-width:700px){.show-header{padding:15px 5vw;background:linear-gradient(to bottom,#ece9e4f5,#ece9e4c7 80%,transparent)}.identity-stack{gap:6px;max-width:70vw}.wordmark{font-size:19px}.wordmark span{font-size:11px}.identity-study{font-size:9px;gap:1px}.identity-contact{font-size:10px;gap:1px}.show-header nav{right:5vw;top:16px;gap:11px;font-size:9px}.scene-ui[data-scene="0"] .side-note{top:36%}.on-dark .show-header{background:linear-gradient(to bottom,#29211df4 0%,#29211dc9 78%,transparent 100%)}}
 
 
-/* 开场水雾擦除：起雾玻璃折射，清晰区域从中心扩散一次。 */
-@property --wipe-radius-x{syntax:"<length>";inherits:false;initial-value:5vmax}
-@property --wipe-radius-y{syntax:"<length>";inherits:false;initial-value:4vmax}
-@property --wipe-x{syntax:"<percentage>";inherits:false;initial-value:54%}
-@property --wipe-y{syntax:"<percentage>";inherits:false;initial-value:46%}
-@keyframes opening-water-wipe{
-  0%{--wipe-radius-x:5vmax;--wipe-radius-y:4vmax;--wipe-x:55%;--wipe-y:43%}
-  18%{--wipe-radius-x:14vmax;--wipe-radius-y:10vmax;--wipe-x:57%;--wipe-y:44%}
-  58%{--wipe-radius-x:72vmax;--wipe-radius-y:53vmax;--wipe-x:53%;--wipe-y:48%}
-  100%{--wipe-radius-x:180vmax;--wipe-radius-y:138vmax;--wipe-x:50%;--wipe-y:50%}
-}
+
+/* 开场水雾擦除：全屏雾化玻璃，湍流位移让中心清晰区带有水波边缘。 */
 .motion-filters{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
 .opening-mist{
-  z-index:20;inset:-4%;background:rgba(238,235,228,.42);
-  -webkit-backdrop-filter:blur(13px) saturate(.72);backdrop-filter:blur(13px) saturate(.72);
-  filter:url(#mist-ripple);
-  -webkit-mask-image:radial-gradient(ellipse var(--wipe-radius-x) var(--wipe-radius-y) at var(--wipe-x) var(--wipe-y),transparent 0 55%,rgba(0,0,0,.35) 68%,#000 82%);
-  mask-image:radial-gradient(ellipse var(--wipe-radius-x) var(--wipe-radius-y) at var(--wipe-x) var(--wipe-y),transparent 0 55%,rgba(0,0,0,.35) 68%,#000 82%);
-  animation:opening-water-wipe 2.7s cubic-bezier(.16,.68,.22,1) .12s both;
+  position:fixed;z-index:40;inset:0;overflow:hidden;pointer-events:none;
+  background:rgba(238,235,228,.24);
+  -webkit-backdrop-filter:blur(16px) saturate(.68);backdrop-filter:blur(16px) saturate(.68);
+  -webkit-mask:url(#water-opening);mask:url(#water-opening);
 }
-.opening-mist i{animation:opening-mist-lift 2.15s cubic-bezier(.2,.7,.2,1) both;opacity:.38}
+.opening-mist i{animation:opening-mist-lift 2.1s cubic-bezier(.2,.7,.2,1) both;opacity:.38}
 .opening-mist i:nth-child(1){animation-delay:.04s}
 .opening-mist i:nth-child(2){animation-delay:.12s}
 .opening-mist i:nth-child(3){animation-delay:.2s}
@@ -46,15 +35,15 @@
   100%{translate:0 -9vh;scale:1.14;opacity:0}
 }
 .opening-mist:after{
-  animation:none;opacity:.52;
+  animation:none;opacity:.5;
   background:
-    radial-gradient(ellipse at 53% 48%,rgba(255,255,255,.24),transparent 45%),
-    linear-gradient(115deg,rgba(255,255,255,.12),transparent 36%,rgba(255,255,255,.08) 66%,transparent);
+    radial-gradient(ellipse at 54% 46%,rgba(255,255,255,.22),transparent 42%),
+    linear-gradient(115deg,rgba(255,255,255,.1),transparent 34%,rgba(255,255,255,.07) 67%,transparent);
 }
 @media(max-width:700px){
-  .opening-mist{-webkit-backdrop-filter:blur(9px) saturate(.72);backdrop-filter:blur(9px) saturate(.72)}
+  .opening-mist{-webkit-backdrop-filter:blur(10px) saturate(.7);backdrop-filter:blur(10px) saturate(.7)}
 }
 @media(prefers-reduced-motion:reduce){
-  .opening-mist{display:none;animation:none;filter:none;-webkit-backdrop-filter:none;backdrop-filter:none;-webkit-mask-image:none;mask-image:none}
+  .opening-mist{display:none}
   .opening-mist i,.opening-mist:after{animation:none}
 }
