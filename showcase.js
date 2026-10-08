@@ -11,7 +11,7 @@
   const current=Math.min(3,Math.floor(p+.45));
   const q=reduced.matches?current:p;
   const first=span(q,.12,.92), second=span(q,1.18,1.9), third=span(q,2.18,2.94);
-  mist.style.opacity=(1-span(q,.02,.72))*(reduced.matches?.48:1);
+  mist.style.opacity=(1-span(q,.02,.72))*(reduced.matches?0:1);
   model.style.opacity=1-span(q,.25,.7);
   model.style.transform=`scale(${1+first*.32}) rotate(${first*-3}deg)`;
   visor.style.opacity=span(q,.3,.7)*(1-second);
