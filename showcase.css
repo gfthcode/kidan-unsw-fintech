@@ -98,3 +98,9 @@
  .model-pose[data-pose="3"]{transform:scale(1.1)}
 }
 @media(prefers-reduced-motion:reduce){.model-pose{transition:none}}
+
+/* Keep the hero still until scroll enters the Rokid section. */
+.opening-mist{opacity:0;transition:opacity .08s linear}
+.opening-mist i{animation:none!important}
+.scene-ui[data-scene="0"]{animation:none!important}
+.model-pose[data-pose="3"]{display:none}
