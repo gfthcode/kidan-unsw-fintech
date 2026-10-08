@@ -14,3 +14,47 @@
 .show-header{display:block;padding:25px 3.5vw;background:linear-gradient(to bottom,#ece9e4ed,#ece9e4a6 74%,transparent)}.identity-stack{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:11px;width:max-content;max-width:min(480px,55vw)}.wordmark{font-size:26px;line-height:1.1}.wordmark span{font-size:14px;margin-left:3px}.identity-study{display:flex;flex-direction:column;gap:4px;color:#594e44;font-size:12px;letter-spacing:.025em;line-height:1.5}.identity-study strong{font-weight:600}.identity-study span{color:#817568}.identity-contact{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:700;line-height:1.5}.show-header nav{position:absolute;right:3.5vw;top:30px}.scene-ui[data-scene="0"] .corner-top{display:none}.scene-ui[data-scene="0"] .side-note{top:41%}.on-dark .show-header{background:linear-gradient(to bottom,#29211df2 0%,#29211ddd 68%,#29211d00 100%)}.on-dark .identity-study,.on-dark .identity-contact{color:#ebdcc9}.on-dark .identity-study span{color:#ccb8a4}
 @media(max-width:700px){.show-header{padding:15px 5vw;background:linear-gradient(to bottom,#ece9e4f5,#ece9e4c7 80%,transparent)}.identity-stack{gap:6px;max-width:70vw}.wordmark{font-size:19px}.wordmark span{font-size:11px}.identity-study{font-size:9px;gap:1px}.identity-contact{font-size:10px;gap:1px}.show-header nav{right:5vw;top:16px;gap:11px;font-size:9px}.scene-ui[data-scene="0"] .side-note{top:36%}.on-dark .show-header{background:linear-gradient(to bottom,#29211df4 0%,#29211dc9 78%,transparent 100%)}}
 
+
+/* 开场水雾擦除：起雾玻璃折射，清晰区域从中心扩散一次。 */
+@property --wipe-radius-x{syntax:"<length>";inherits:false;initial-value:5vmax}
+@property --wipe-radius-y{syntax:"<length>";inherits:false;initial-value:4vmax}
+@property --wipe-x{syntax:"<percentage>";inherits:false;initial-value:54%}
+@property --wipe-y{syntax:"<percentage>";inherits:false;initial-value:46%}
+@keyframes opening-water-wipe{
+  0%{--wipe-radius-x:5vmax;--wipe-radius-y:4vmax;--wipe-x:55%;--wipe-y:43%}
+  18%{--wipe-radius-x:14vmax;--wipe-radius-y:10vmax;--wipe-x:57%;--wipe-y:44%}
+  58%{--wipe-radius-x:72vmax;--wipe-radius-y:53vmax;--wipe-x:53%;--wipe-y:48%}
+  100%{--wipe-radius-x:180vmax;--wipe-radius-y:138vmax;--wipe-x:50%;--wipe-y:50%}
+}
+.motion-filters{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
+.opening-mist{
+  z-index:20;inset:-4%;background:rgba(238,235,228,.42);
+  -webkit-backdrop-filter:blur(13px) saturate(.72);backdrop-filter:blur(13px) saturate(.72);
+  filter:url(#mist-ripple);
+  -webkit-mask-image:radial-gradient(ellipse var(--wipe-radius-x) var(--wipe-radius-y) at var(--wipe-x) var(--wipe-y),transparent 0 55%,rgba(0,0,0,.35) 68%,#000 82%);
+  mask-image:radial-gradient(ellipse var(--wipe-radius-x) var(--wipe-radius-y) at var(--wipe-x) var(--wipe-y),transparent 0 55%,rgba(0,0,0,.35) 68%,#000 82%);
+  animation:opening-water-wipe 2.7s cubic-bezier(.16,.68,.22,1) .12s both;
+}
+.opening-mist i{animation:opening-mist-lift 2.15s cubic-bezier(.2,.7,.2,1) both;opacity:.38}
+.opening-mist i:nth-child(1){animation-delay:.04s}
+.opening-mist i:nth-child(2){animation-delay:.12s}
+.opening-mist i:nth-child(3){animation-delay:.2s}
+.opening-mist i:nth-child(4){animation-delay:.08s}
+@keyframes opening-mist-lift{
+  0%{translate:0 7vh;scale:.82;opacity:0}
+  18%{opacity:.38}
+  100%{translate:0 -9vh;scale:1.14;opacity:0}
+}
+.opening-mist:after{
+  animation:none;opacity:.52;
+  background:
+    radial-gradient(ellipse at 53% 48%,rgba(255,255,255,.24),transparent 45%),
+    linear-gradient(115deg,rgba(255,255,255,.12),transparent 36%,rgba(255,255,255,.08) 66%,transparent);
+}
+@media(max-width:700px){
+  .opening-mist{-webkit-backdrop-filter:blur(9px) saturate(.72);backdrop-filter:blur(9px) saturate(.72)}
+}
+@media(prefers-reduced-motion:reduce){
+  .opening-mist{display:none;animation:none;filter:none;-webkit-backdrop-filter:none;backdrop-filter:none;-webkit-mask-image:none;mask-image:none}
+  .opening-mist i,.opening-mist:after{animation:none}
+}
