@@ -24,7 +24,7 @@
   court.style.opacity=third;
   court.style.transform=`translate(-50%,-50%) scale(${.65+third*.35}) rotate(${(1-third)*-15}deg)`;
   $('.stage-progress i').style.height=`${p/3*100}%`;
-  if(current!==lastScene){scenes.forEach((s,i)=>{s.hidden=i!==current;s.inert=i!==current;});document.querySelectorAll('.site-preview').forEach(el=>{const visible=Number(el.dataset.previewScene)===current;el.inert=!visible;el.setAttribute('aria-hidden',String(!visible));el.classList.toggle('is-current',visible);});nav.forEach((a,i)=>{if(i===current)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current');});document.body.classList.toggle('on-dark',current===1);lastScene=current;}
+  if(current!==lastScene){scenes.forEach((s,i)=>{s.hidden=i!==current;s.inert=i!==current;});nav.forEach((a,i)=>{if(i===current)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current');});document.body.classList.toggle('on-dark',current===1);lastScene=current;}
  }
  function queue(){if(!scheduled){scheduled=true;requestAnimationFrame(update);}}
  addEventListener('scroll',queue,{passive:true});addEventListener('resize',queue);reduced.addEventListener('change',queue);
