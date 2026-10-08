@@ -5,11 +5,28 @@
  const clamp=n=>Math.max(0,Math.min(1,n)), ease=n=>n*n*(3-2*n), span=(p,a,b)=>ease(clamp((p-a)/(b-a)));
  const blend=(a,b,t)=>`rgb(${a.map((v,i)=>Math.round(v+(b[i]-v)*t)).join(',')})`;
  let scheduled=false, lastScene=-1, activeDialog=null, opener=null;
+ const motionPoses=[...document.querySelectorAll('.model-pose')], motionStartedAt=performance.now();
+ function applyMotion(time,q){
+  if(!motionPoses.length)return;
+  if(reduced.matches){motionPoses.forEach((el,i)=>el.style.opacity=i===0?'1':'0');return;}
+  let t=time;
+  if(q>.2)t=Math.max(t,3300);
+  const starts=[1050,1850,2800], fade=300, alpha=[0,0,0,0];
+  if(t<starts[0])alpha[0]=1;
+  else if(t<starts[0]+fade){const x=(t-starts[0])/fade;alpha[0]=1-x;alpha[1]=x;}
+  else if(t<starts[1])alpha[1]=1;
+  else if(t<starts[1]+fade){const x=(t-starts[1])/fade;alpha[1]=1-x;alpha[2]=x;}
+  else if(t<starts[2])alpha[2]=1;
+  else if(t<starts[2]+fade){const x=(t-starts[2])/fade;alpha[2]=1-x;alpha[3]=x;}
+  else alpha[3]=1;
+  motionPoses.forEach((el,i)=>el.style.opacity=String(alpha[i]));
+ }
  function update(){
   scheduled=false;
   const h=innerHeight, p=Math.max(0,Math.min(3,-$('.show-track').getBoundingClientRect().top/(h*1.1)));
   const current=Math.min(3,Math.floor(p+.45));
   const q=reduced.matches?current:p;
+  const motionElapsed=performance.now()-motionStartedAt;applyMotion(motionElapsed,q);
   const first=span(q,.12,.92), second=span(q,1.18,1.9), third=span(q,2.18,2.94);
   mist.style.opacity=(1-span(q,.02,.72))*(reduced.matches?0:1);
   model.style.opacity=1-span(q,.25,.7);
@@ -24,6 +41,7 @@
   court.style.opacity=third;
   court.style.transform=`translate(-50%,-50%) scale(${.65+third*.35}) rotate(${(1-third)*-15}deg)`;
   $('.stage-progress i').style.height=`${p/3*100}%`;
+  if(!reduced.matches&&motionElapsed<3300)queue();
   if(current!==lastScene){scenes.forEach((s,i)=>{s.hidden=i!==current;s.inert=i!==current;});nav.forEach((a,i)=>{if(i===current)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current');});document.body.classList.toggle('on-dark',current===1);lastScene=current;}
  }
  function queue(){if(!scheduled){scheduled=true;requestAnimationFrame(update);}}

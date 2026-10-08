@@ -62,3 +62,21 @@
 @media(max-width:700px){
  .opening-mist{-webkit-backdrop-filter:blur(13px) saturate(.62);backdrop-filter:blur(13px) saturate(.62)}
 }
+
+/* Rokid opening poses: reveal, reach, remove, then product hero. */
+.model-motion{position:absolute;inset:0;pointer-events:none}
+.model-pose{
+  position:absolute;top:0;left:50%;height:100%;aspect-ratio:362/484;
+  background-image:url("assets/rokid-motion-sprite.png?v=20261008-motion-poses");
+  background-repeat:no-repeat;background-size:400% 100%;
+  opacity:0;transition:opacity .26s ease;
+  will-change:opacity,transform;
+}
+.model-pose[data-pose="0"]{background-position:0% 50%;transform:translateX(-50%)}
+.model-pose[data-pose="1"]{background-position:33.333% 50%;transform:translateX(-50%)}
+.model-pose[data-pose="2"]{background-position:66.667% 50%;transform:translateX(-50%)}
+.model-pose[data-pose="3"]{background-position:100% 50%;transform:translateX(-50%) scale(1.52)}
+@media(max-width:700px){
+  .model-pose[data-pose="3"]{transform:translateX(-50%) scale(1.38)}
+}
+@media(prefers-reduced-motion:reduce){.model-pose{transition:none}}
